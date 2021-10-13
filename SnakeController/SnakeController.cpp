@@ -8,6 +8,7 @@
 
 namespace Snake
 {
+
 ConfigurationError::ConfigurationError()
     : std::logic_error("Bad configuration of Snake::Controller.")
 {}
@@ -146,17 +147,35 @@ void Controller::receive(std::unique_ptr<Event> e)
                 if (requestedFoodCollidedWithSnake) {
                     m_foodPort.send(std::make_unique<EventT<FoodReq>>());
                 } else {
-                    DisplayInd clearOldFood;
+                    //clearOldFood(m_foodPosition);
+                    /*DisplayInd clearOldFood;
                     clearOldFood.x = m_foodPosition.first;
                     clearOldFood.y = m_foodPosition.second;
                     clearOldFood.value = Cell_FREE;
                     m_displayPort.send(std::make_unique<EventT<DisplayInd>>(clearOldFood));
 
+void clearOldFood(){
+    DisplayInd clearOldFood;
+    clearOldFood.x = m_foodPosition.first;
+    clearOldFood.y = m_foodPosition.second;
+    clearOldFood.value = Cell_FREE;
+    m_displayPort.send(std::make_unique<EventT<DisplayInd>>(clearOldFood));
+}
+*/
                     DisplayInd placeNewFood;
                     placeNewFood.x = receivedFood.x;
                     placeNewFood.y = receivedFood.y;
                     placeNewFood.value = Cell_FOOD;
                     m_displayPort.send(std::make_unique<EventT<DisplayInd>>(placeNewFood));
+/*
+void placeNewFood(){
+    DisplayInd placeNewFood;
+    placeNewFood.x = receivedFood.x;
+    placeNewFood.y = receivedFood.y;
+    placeNewFood.value = Cell_FOOD;
+    m_displayPort.send(std::make_unique<EventT<DisplayInd>>(placeNewFood));
+}
+*/
                 }
 
                 m_foodPosition = std::make_pair(receivedFood.x, receivedFood.y);
@@ -191,5 +210,15 @@ void Controller::receive(std::unique_ptr<Event> e)
         }
     }
 }
-
+void clearOldFood(std::make_pair & m_foodPosition){
+    clearOldFood(m_foodPosition);
+    DisplayInd clearOldFood;
+    clearOldFood.x = m_foodPosition.first;
+    clearOldFood.y = m_foodPosition.second;
+    clearOldFood.value = Cell_FREE;
+    m_displayPort.send(std::make_unique<EventT<DisplayInd>>(clearOldFood));
+    //error: variable or field ‘clearOldFood’ declared void
+    //214 | void clearOldFood(std::make_pair & m_foodPosition)
+    //czemu wyrzuca mi taki błąd w tej funkcji?
+}
 } // namespace Snake
